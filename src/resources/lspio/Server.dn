@@ -1,0 +1,11 @@
+uses data.adt.List
+
+data RawMessage {
+    byte message[]
+}
+
+interface Server {
+    bool goLive(List opts)
+    RawMessage messageIn()
+    bool messageOut(RawMessage sendOut)
+}

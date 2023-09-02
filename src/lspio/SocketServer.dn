@@ -1,0 +1,42 @@
+uses lspio.opt_types.SockInfo
+component provides lspio.Server requires net.TCPSocket, net.TCPServerSocket, data.adt.List, io.Output out, data.IntUtil iu{
+    const int BUFF_SIZE = 1024
+    List rawMessageList = new List()
+    
+    void listen(TCPServerSocket listener) {
+        while(true) {
+            TCPSocket client = new TCPSocket()
+            if (client.accept(listener)) {
+                byte buf[]
+                byte msg[]
+                while ((buf = client.recv(BUFF_SIZE)).arrayLength > 0) {
+                    msg = clone buf
+                }
+                RawMessage nextMessage = new RawMessage(msg)
+                rawMessageList.add(nextMessage) 
+            }
+        }
+    }
+
+    bool lspio.Server:goLive(List opts) {
+        TCPServerSocket listener = new TCPServerSocket()
+        SockInfo ipAndPort = opts.getIndex(0)
+        listener.bind(ipAndPort.ip, ipAndPort.port)
+        Thread listenThread = asynch::listen(listener)
+        return true
+    }
+
+    RawMessage lspio.Server:messageIn() {
+        int msgListLen
+        if ((msgListLen = rawMessageList.getLength()) > 0) {
+            return rawMessageList.getIndex(0)
+        }
+        else {
+            return null
+        }
+    }
+
+    bool lspio.Server:messageOut(RawMessage sendOut) {
+        return true
+    }
+}

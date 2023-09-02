@@ -1,0 +1,14 @@
+component provides App requires net.TCPSocket, io.Output out, data.IntUtil iu{
+    const char DEFAULT_SERVER_IP[] = "127.0.0.1"
+    const int DEFAULT_SERVER_PORT = 9999      
+
+    int App:main(AppParam params[]) {
+        TCPSocket host = new TCPSocket()
+        host.connect(DEFAULT_SERVER_IP, DEFAULT_SERVER_PORT)
+        byte testData[] = (0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x77, 0x6F, 0x72, 0x6C, 0x64)
+        out.println("$(iu.makeString(testData.arrayLength))")
+        host.send(testData)
+        host.disconnect()
+        return 0
+    }
+}

@@ -1,0 +1,4 @@
+data SockInfo {
+    char ip[]
+    int port
+}
